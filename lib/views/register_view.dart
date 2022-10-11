@@ -73,12 +73,12 @@ class _RegisterViewState extends State<RegisterView> {
                 if (e.code == 'weak-password') {
                   await showErrorDialog(
                     context,
-                    'Weak Password',
+                    'Weak Password looser',
                   );
                 } else if (e.code == 'email-already-in-use') {
                   await showErrorDialog(
                     context,
-                    'Email is already in use',
+                    'Email is already in use, you stupid cunt',
                   );
                 } else if (e.code == 'invalid-email') {
                   await showErrorDialog(
@@ -107,7 +107,7 @@ class _RegisterViewState extends State<RegisterView> {
                   (route) => false,
                 );
               },
-              child: const Text('Already registered? Login here'))
+              child: const Text('Already registered? Good for you bruv'))
         ],
       ),
     );

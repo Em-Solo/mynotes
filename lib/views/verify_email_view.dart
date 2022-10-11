@@ -27,6 +27,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
             },
             child: const Text('Send Email Verification'),
           ),
+          const Text(
+              'If you are stuck press this to go back to the rester page'),
           TextButton(
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
