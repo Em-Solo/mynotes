@@ -35,7 +35,9 @@ class _NotesViewState extends State<NotesView> {
         title: const Text('Your Notes'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushNamed(newNoteRoute);
+            },
             icon: const Icon(Icons.add),
           ),
           PopupMenuButton<MenuAction>(
@@ -75,7 +77,12 @@ class _NotesViewState extends State<NotesView> {
                 stream: _notesService.allNotes,
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
+                    // when stream is empty meaning the user hasnt created and added the notes to the stream thiss is the state
                     case ConnectionState.waiting:
+                    // implicid fallthrough meaning for both cases we do the same thing case has no logic so we fall to the next one
+                    // we get to this case once the stream returns at least one value/ contains atleast one value
+                    // so the stream is starting to get populated
+                    case ConnectionState.active:
                       return const Text('Waiting for all notes....');
                     default:
                       return const CircularProgressIndicator();
