@@ -21,6 +21,7 @@ const createUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
         "email" TEXT NOT NULL UNIOQUE,
         PRIMARY KEY("id" AUTOINCREMENT)
       );''';
+
 //sql code for note table creation
 const craeteNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
         "id" INTEGER NOT NULL,
@@ -98,13 +99,22 @@ class NotesService {
 
   // creating a singleton
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance();
+  // initializer
+  NotesService._sharedInstance() {
+    _notesStreamController =
+        //onLissten callback will be called whenever a new listener is added to the stream
+        // so what will happen is when ever calls the singleton to add new stream the onListen callback will be called and the previes notes will be added to the stream
+        StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
   factory NotesService() => _shared;
 
   // what this line of code does is
   // I want to be able to control a stream of a list of databseNotes
-  final _notesStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
+  late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   Future<void> _cacheNotes() async {
     final allNotes = await getAllNotes();
@@ -233,7 +243,7 @@ class NotesService {
       whereArgs: [email.toLowerCase()],
     );
 
-    // we made email unique so when we give in an email that is included in the table then it shoudl return 1
+    // we made email unique so when we give in an email that is included in the table then it should return 1
     // so if its not 1 it means that something is wrong
     if (deletedCount != 1) {
       throw CouldNotDeleteUser();
