@@ -18,9 +18,9 @@ const userTable = 'user';
 //sql code for user table creation
 const createUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
         "id" INTEGER NOT NULL,
-        "email" TEXT NOT NULL UNIOQUE,
+        "email" TEXT NOT NULL UNIQUE,
         PRIMARY KEY("id" AUTOINCREMENT)
-      );''';
+      )''';
 
 //sql code for note table creation
 const craeteNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
