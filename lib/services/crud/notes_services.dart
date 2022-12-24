@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:mynotes/extensions/list/filter.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show join;
@@ -97,6 +98,8 @@ class NotesService {
   // our cache, where we will be keeping the notes that the notes service manipulates.
   List<DatabaseNote> _notes = [];
 
+  DatabaseUser? _user;
+
   // creating a singleton
   static final NotesService _shared = NotesService._sharedInstance();
   // initializer
@@ -126,7 +129,17 @@ class NotesService {
   }
 
   // a stream that subscribes to the stream controller and gets all the notes. its a getter
-  Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
+  Stream<List<DatabaseNote>> get allNotes =>
+      _notesStreamController.stream.filter(
+        (note) {
+          final currentUser = _user;
+          if (currentUser != null) {
+            return note.userId == currentUser.id;
+          } else {
+            throw UserShouldBeSetBeforeReadingAllNotes();
+          }
+        },
+      );
 
   Future<void> open() async {
     if (_db != null) {
@@ -201,12 +214,21 @@ class NotesService {
     return DatabaseUser(id: userId, email: email);
   }
 
-  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+  Future<DatabaseUser> getOrCreateUser({
+    required String email,
+    bool setAsCurrentUser = true,
+  }) async {
     try {
       final user = await getUser(email: email);
+      if (setAsCurrentUser) {
+        _user = user;
+      }
       return user;
     } on CouldNotFindUser {
       final createdUser = await createUser(email: email);
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
       return createdUser;
     } catch (e) {
       // catches the expetion and throws it back to the caller/ call site for debugging
@@ -341,8 +363,8 @@ class NotesService {
         textColumn: text,
         isSyncedWithCloudColumn: 0,
       },
-      // where: 'id = ?',
-      // whereArgs: [note.id],
+      where: 'id = ?',
+      whereArgs: [note.id],
     );
 
     if (updatesCount == 0) {
