@@ -5,10 +5,12 @@ import 'package:flutter/foundation.dart';
 //meaning their internals will never be changed upon initialisation
 @immutable
 class AuthUser {
-  final String? email;
+  final String id;
+  final String email;
   final bool isEmailVerified;
 
   const AuthUser({
+    required this.id,
     required this.email,
     required this.isEmailVerified,
   });
@@ -17,7 +19,8 @@ class AuthUser {
 //and upon calling this method you initialise an instance of AuthUser class and tu take the bool value from the
 //user the firebase user. Feels like a thing we set up t obe called automatically not manuyally
   factory AuthUser.fromFirebase(User user) => AuthUser(
-        email: user.email,
+        id: user.uid,
+        email: user.email!,
         isEmailVerified: user.emailVerified,
       );
 }

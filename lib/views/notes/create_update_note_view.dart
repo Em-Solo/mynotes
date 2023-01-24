@@ -35,7 +35,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
     // Using ! because we know that if we get to this point its not gonna be null
     final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email!;
+    final email = currentUser.email;
     //going from the firebase user to the database one, same thing different saved place.
     final owner = await _notesService.getUser(email: email);
 
