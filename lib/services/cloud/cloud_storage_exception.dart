@@ -5,7 +5,7 @@ class CloudStorageException implements Exception {
 }
 
 // For the C in CRUD
-class CloudNotCreateNoteException extends CloudStorageException {}
+class CouldNotCreateNoteException extends CloudStorageException {}
 
 // for the R in CRUD
 class CouldNotGetAllNotesException extends CloudStorageException {}

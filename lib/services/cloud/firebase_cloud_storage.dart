@@ -73,7 +73,7 @@ class FirebaseCloudStorage {
     try {
       await notes.doc(documentId).update({textFieldName: text});
     } catch (e) {
-      throw CouldNotDeleteNoteException();
+      throw CouldNotUpdateNoteException();
     }
   }
 
